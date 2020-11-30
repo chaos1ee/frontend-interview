@@ -1,6 +1,6 @@
 # Event Loop
 
-# 事件总线
+# 实现观察订阅
 
 ```javascript
 class Event {
