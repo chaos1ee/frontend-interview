@@ -45,22 +45,24 @@ Array.prototype.reduce = function () {
 };
 ```
 
-# 防抖
+# 节流防抖
 
 ```javascript
 function debounce(func, wait, immediate) {
-  let timeout;
+  let timer;
   return function () {
     const context = this;
     const args = arguments;
-    if (timeout) clearTimeout(timeout);
+
+    if (timer) clearTimeout(timeout);
+
     if (immediate) {
-      timeout = setTimeout(function () {
-        timeout = null;
+      timer = setTimeout(function () {
+        timer = null;
       }, wait);
-      if (callNow) func.apply(context, args);
+      func.apply(context, args);
     } else {
-      timeout = setTimeout(function () {
+      timer = setTimeout(function () {
         func.apply(context, args);
       }, wait);
     }
@@ -83,9 +85,6 @@ function debounce(func, wait, immediate) {
 ```javascript
 const request = new fetch(url, {
   method: "post",
-  headers: {
-    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-  },
 });
 
 const timer = new Promise((resolve, reject) => {
