@@ -1,5 +1,49 @@
 # Event Loop
 
+# 请实现一个 cacheRequest 方法，保证发出多次同一个 ajax 请求时都能拿到数据，而实际上只发出一次请求
+
+```javascript
+const request = (url, options) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ url, data: options, state: "Success" });
+    }, 2000);
+  });
+};
+
+const PENDING = 0;
+const SUCCESS = 1;
+const FAILED = 2;
+
+const cache = new Map();
+
+const cacheRequest = (url, options) => {
+  let key = `${url}:${option.method}}`;
+
+  if (cache.has(key)) {
+    if (cache.get(key).status === PENDING) {
+      return cache.get(key).promise;
+    }
+
+    return Promise.resolve(cache.get(key).data);
+  } else {
+    const requestApi = request(url, options);
+
+    cache.set(key, { status: PENDING, promise: requestApi });
+
+    return requestApi
+      .then((res) => {
+        cache.set(key, { status: SUCCESS, data: res });
+        return Promise.resolve(res);
+      })
+      .catch((err) => {
+        cache.set(key, { status: FAILED, data: err });
+        Promise.reject(err);
+      });
+  }
+};
+```
+
 # 实现观察订阅
 
 ```javascript
@@ -8,9 +52,19 @@ class Event {
 
   on() {}
 
-  of() {}
+  off() {}
 
   emit() {}
+
+  once(event, listener) {
+    const func = () => {
+      const args = [].slice.call(arguments);
+      listener.apply(null, args);
+      this.off(event, func);
+    };
+
+    this.on(event, func);
+  }
 }
 ```
 
